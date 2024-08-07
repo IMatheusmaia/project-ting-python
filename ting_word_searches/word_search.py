@@ -23,4 +23,29 @@ def exists_word(word, instance):
 
 
 def search_by_word(word, instance):
-    """Aqui irá sua implementação"""
+    basic_results = exists_word(word, instance)
+    detailed_results = []
+
+    for result in basic_results:
+        file_name = result["arquivo"]
+        occurrences = result["ocorrencias"]
+
+        detailed_occurrences = []
+        file_meta_data = instance.search(0)
+        file_lines = file_meta_data["linhas_do_arquivo"]
+
+        for occurrence in occurrences:
+            line_number = occurrence["linha"]
+            line_content = file_lines[line_number - 1]
+            detailed_occurrences.append({
+                "linha": line_number,
+                "conteudo": line_content
+            })
+
+        detailed_results.append({
+            "palavra": word,
+            "arquivo": file_name,
+            "ocorrencias": detailed_occurrences
+        })
+
+    return detailed_results
